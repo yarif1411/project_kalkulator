@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Kalkulator Sederhana</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <!-- Custom CSS -->
+  <style>
+    :root {
+      --warna-latar: #eef3fb;
+      --warna-utama: #2563eb;
+      --warna-display: #10213a;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--warna-latar), #dce8ff);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .kalkulator {
+      width: 100%;
+      max-width: 380px;
+      border-radius: 24px;
+    }
+
+    .display {
+      padding: 20px;
+      border-radius: 16px;
+      background-color: var(--warna-display);
+      color: white;
+      text-align: right;
+    }
+
+    .riwayat {
+      min-height: 24px;
+      color: #b8c9e3;
+      font-size: 14px;
+    }
+
+    .hasil {
+      overflow-wrap: anywhere;
+      font-size: clamp(28px, 7vw, 40px);
+      font-weight: bold;
+      line-height: 1.3;
+    }
+
+    .tombol {
+      min-height: 60px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 600;
+
+      /* Animasi hanya pada tombol kalkulator */
+      transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+    }
+
+    .tombol:hover {
+      transform: translateY(-2px);
+    }
+
+    .tombol:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background-color: var(--warna-utama);
+      border-color: var(--warna-utama);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tombol {
+        transition: none;
+      }
+
+      .tombol:hover,
+      .tombol:active {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center p-3">
+  <main class="kalkulator bg-white shadow-lg p-4">
+    <header class="mb-4">
+      <h1 class="h4 fw-bold mb-1">Kalkulator</h1>
+      <p class="text-secondary small mb-0">
+        Hitung dengan mudah dan cepat.
+      </p>
+    </header>
+
+    <!-- Tampilan kalkulator -->
+    <section class="display mb-4" aria-label="Tampilan perhitungan">
+      <div id="riwayat" class="riwayat"></div>
+
+      <output
+        id="hasil"
+        class="hasil d-block"
+        aria-label="Hasil perhitungan"
+        aria-live="polite"
+      >0</output>
+    </section>
+
+    <!-- Tombol kalkulator menggunakan Grid Bootstrap -->
+    <section aria-label="Tombol kalkulator">
+      <div id="tombol-kalkulator" class="row g-2">
+
+        <!-- Baris pertama -->
+        <div class="col-6">
+          <button
+            type="button"
+            class="btn btn-danger tombol w-100"
+            data-aksi="reset"
+          >AC</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-light tombol w-100"
+            data-aksi="hapus"
+            aria-label="Hapus satu angka"
+          >⌫</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-primary tombol w-100"
+            data-operator="/"
+            aria-label="Bagi"
+          >÷</button>
+        </div>
+
+        <!-- Baris kedua -->
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="7">7</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="8">8</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="9">9</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-primary tombol w-100"
+            data-operator="*"
+            aria-label="Kali"
+          >×</button>
+        </div>
+
+        <!-- Baris ketiga -->
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="4">4</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="5">5</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="6">6</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-primary tombol w-100"
+            data-operator="-"
+            aria-label="Kurang"
+          >−</button>
+        </div>
+
+        <!-- Baris keempat -->
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="1">1</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="2">2</button>
+        </div>
+
+        <div class="col-3">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="3">3</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-primary tombol w-100"
+            data-operator="+"
+            aria-label="Tambah"
+          >+</button>
+        </div>
+
+        <!-- Baris kelima -->
+        <div class="col-6">
+          <button type="button" class="btn btn-light tombol w-100" data-angka="0">0</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-light tombol w-100"
+            data-angka="."
+            aria-label="Titik desimal"
+          >.</button>
+        </div>
+
+        <div class="col-3">
+          <button
+            type="button"
+            class="btn btn-success tombol w-100"
+            data-aksi="hitung"
+            aria-label="Hitung hasil"
+          >=</button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-4 text-center">
+      <small class="text-secondary">
+        AC: reset · ⌫: hapus satu angka
+      </small>
+    </footer>
+  </main>
+
+  <script>
+    // Mengambil elemen HTML yang akan digunakan.
+    const hasilElement = document.getElementById("hasil");
+    const riwayatElement = document.getElementById("riwayat");
+    const tombolContainer = document.getElementById("tombol-kalkulator");
+
+    // State: data yang menyimpan kondisi kalkulator.
+    let angkaSekarang = "0";
+    let angkaPertama = null;
+    let operator = null;
+    let inputBaru = false;
+    let terjadiError = false;
+
+    const simbolOperator = {
+      "+": "+",
+      "-": "−",
+      "*": "×",
+      "/": "÷"
+    };
+
+    function tampilkanHasil() {
+      hasilElement.textContent = angkaSekarang;
+    }
+
+    function resetKalkulator() {
+      angkaSekarang = "0";
+      angkaPertama = null;
+      operator = null;
+      inputBaru = false;
+      terjadiError = false;
+
+      riwayatElement.textContent = "";
+      tampilkanHasil();
+    }
+
+    function tampilkanError(pesan) {
+      angkaSekarang = "Error";
+      angkaPertama = null;
+      operator = null;
+      inputBaru = true;
+      terjadiError = true;
+
+      riwayatElement.textContent = pesan;
+      tampilkanHasil();
+    }
+
+    function tambahAngka(angka) {
+      // Mengetik angka setelah error akan memulai ulang kalkulator.
+      if (terjadiError) {
+        resetKalkulator();
+      }
+
+      // Mulai angka kedua atau perhitungan baru.
+      if (inputBaru) {
+        angkaSekarang = "0";
+        inputBaru = false;
+      }
+
+      // Satu angka hanya boleh memiliki satu titik desimal.
+      if (angka === ".") {
+        if (!angkaSekarang.includes(".")) {
+          angkaSekarang += ".";
+        }
+
+        tampilkanHasil();
+        return;
+      }
+
+      // Batasi jumlah digit agar tampilan dan input tetap terkendali.
+      const jumlahDigit = angkaSekarang.replace(/[^0-9]/g, "").length;
+
+      if (jumlahDigit >= 12) {
+        return;
+      }
+
+      // Mengganti angka awal 0, bukan menambahkan menjadi 01.
+      angkaSekarang = angkaSekarang === "0"
+        ? angka
+        : angkaSekarang + angka;
+
+      tampilkanHasil();
+    }
+
+    function hapusAngka() {
+      if (terjadiError) {
+        resetKalkulator();
+        return;
+      }
+
+      // Jangan menghapus hasil atau angka yang sudah disimpan.
+      if (inputBaru) {
+        return;
+      }
+
+      angkaSekarang = angkaSekarang.slice(0, -1);
+
+      if (angkaSekarang === "" || angkaSekarang === "-") {
+        angkaSekarang = "0";
+      }
+
+      tampilkanHasil();
+    }
+
+    function hitungOperasi(angkaA, angkaB, operasi) {
+      // Operasi ditentukan secara eksplisit, tanpa eval().
+      switch (operasi) {
+        case "+":
+          return angkaA + angkaB;
+
+        case "-":
+          return angkaA - angkaB;
+
+        case "*":
+          return angkaA * angkaB;
+
+        case "/":
+          if (angkaB === 0) {
+            throw new Error("Tidak dapat membagi dengan nol.");
+          }
+
+          return angkaA / angkaB;
+
+        default:
+          throw new Error("Operator tidak dikenali.");
+      }
+    }
+//batas pertemuan 16/09/2026
+
+    function hitungHasil() {
+      // Perhitungan membutuhkan angka pertama, operator,
+      // dan angka kedua yang sudah diinput.
+      if (
+        angkaPertama === null ||
+        operator === null ||
+        inputBaru ||
+        terjadiError
+      ) {
+        return;
+      }
+
+      const angkaKedua = Number(angkaSekarang);
+
+      try {
+        const hasil = hitungOperasi(
+          angkaPertama,
+          angkaKedua,
+          operator
+        );
+
+        if (!Number.isFinite(hasil)) {
+          throw new Error("Hasil berada di luar batas perhitungan.");
+        }
+
+        riwayatElement.textContent =
+          `${angkaPertama} ${simbolOperator[operator]} ${angkaKedua} =`;
+
+        // Mengurangi tampilan ekor desimal seperti
+        // 0.30000000000000004. Ini bukan aritmetika finansial presisi.
+        angkaSekarang = String(
+          Number(hasil.toPrecision(12))
+        );
+
+        angkaPertama = null;
+        operator = null;
+        inputBaru = true;
+
+        tampilkanHasil();
+      } catch (error) {
+        tampilkanError(error.message);
+      }
+    }
+
+    function pilihOperator(operatorDipilih) {
+      if (terjadiError) {
+        return;
+      }
+
+      // Selesaikan operasi sebelumnya jika angka kedua tersedia.
+      if (operator !== null && !inputBaru) {
+        hitungHasil();
+
+        if (terjadiError) {
+          return;
+        }
+      }
+
+      angkaPertama = Number(angkaSekarang);
+      operator = operatorDipilih;
+      inputBaru = true;
+
+      riwayatElement.textContent =
+        `${angkaPertama} ${simbolOperator[operator]}`;
+    }
+
+    // Event delegation: satu listener untuk semua tombol.
+    tombolContainer.addEventListener("click", function (event) {
+      const tombol = event.target.closest("button");
+
+      if (!tombol || !tombolContainer.contains(tombol)) {
+        return;
+      }
+
+      if (tombol.dataset.angka !== undefined) {
+        tambahAngka(tombol.dataset.angka);
+        return;
+      }
+
+      if (tombol.dataset.operator !== undefined) {
+        pilihOperator(tombol.dataset.operator);
+        return;
+      }
+
+      switch (tombol.dataset.aksi) {
+        case "reset":
+          resetKalkulator();
+          break;
+
+        case "hapus":
+          hapusAngka();
+          break;
+
+        case "hitung":
+          hitungHasil();
+          break;
+      }
+    });
+  </script>
+</body>
+</html>
